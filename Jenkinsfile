@@ -14,7 +14,7 @@ pipeline {
             steps {
                 echo "Installing Python dependencies..."
                 // Use 'pip install' to get the reporting library
-                bat 'python -m pip install -r requirements.txt'
+                bat 'pip install -r requirements.txt'
             }
         }
 
@@ -43,4 +43,5 @@ pipeline {
     }
 
 }
+
 
