@@ -13,8 +13,8 @@ pipeline {
         stage('Setup') {
             steps {
                 echo "Installing Python dependencies..."
-                // Use 'pip install' to get the reporting library
-                bat 'python -m pip install -r requirements.txt'
+                // Folosim calea completa catre python.exe
+                bat '"C:\\Users\\sofro\\AppData\\Local\\Programs\\Python\\Python314\\python.exe" -m pip install -r requirements.txt'
             }
         }
 
@@ -22,8 +22,8 @@ pipeline {
             steps {
                 script {
                     echo "Running tests: ${params.TEST_SELECTION}"
-                    // This now generates XML files in /test-reports folder
-                    bat "python3 run_tests.py ${params.TEST_SELECTION}"
+                    // Aici era greseala cu 'python3'. Am pus calea completa.
+                    bat '"C:\\Users\\sofro\\AppData\\Local\\Programs\\Python\\Python314\\python.exe" run_tests.py %TEST_SELECTION%'
                 }
             }
         }
@@ -31,7 +31,6 @@ pipeline {
 
     post {
         always {
-            // This tells Jenkins to look for XML files and create the UI Report
             junit 'test-reports/*.xml'
         }
         success {
@@ -41,9 +40,4 @@ pipeline {
             echo 'FAILURE: Tests failed.'
         }
     }
-
 }
-
-
-
-
