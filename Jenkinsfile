@@ -14,7 +14,7 @@ pipeline {
             steps {
                 echo "Installing Python dependencies..."
                 // Use 'pip install' to get the reporting library
-                sh 'pip install -r requirements.txt'
+                bat 'pip install -r requirements.txt'
             }
         }
 
@@ -23,7 +23,7 @@ pipeline {
                 script {
                     echo "Running tests: ${params.TEST_SELECTION}"
                     // This now generates XML files in /test-reports folder
-                    sh "python3 run_tests.py ${params.TEST_SELECTION}"
+                    bat "python3 run_tests.py ${params.TEST_SELECTION}"
                 }
             }
         }
@@ -41,4 +41,5 @@ pipeline {
             echo 'FAILURE: Tests failed.'
         }
     }
+
 }
