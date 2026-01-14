@@ -1,29 +1,32 @@
 pipeline {
     agent any
 
-    parameters {
-        choice(
-            name: 'TEST_SELECTION', 
-            choices: ['All', 'TestOne', 'TestTwo'], 
-            description: 'Choose which Test Suite to run'
-        )
-    }
-
     stages {
-        stage('Setup') {
+        stage('Setup Environment') {
             steps {
-                echo "Installing Python dependencies..."
-                // Folosim calea completa catre python.exe
+                echo "Pregatim mediul..."
+                // Instalam dependintele o singura data
                 bat '"C:\\Users\\sofro\\AppData\\Local\\Programs\\Python\\Python314\\python.exe" -m pip install -r requirements.txt'
             }
         }
 
-        stage('Execute Tests') {
-            steps {
-                script {
-                    echo "Running tests: ${params.TEST_SELECTION}"
-                    // Aici era greseala cu 'python3'. Am pus calea completa.
-                    bat '"C:\\Users\\sofro\\AppData\\Local\\Programs\\Python\\Python314\\python.exe" run_tests.py %TEST_SELECTION%'
+        stage('Run Full Regression') {
+            // Aici e magia: "parallel" ruleaza ambele teste simultan!
+            parallel {
+                stage('Test Suite One') {
+                    steps {
+                        echo "Running Suite 1..."
+                        // Rulam doar primul set de teste
+                        bat '"C:\\Users\\sofro\\AppData\\Local\\Programs\\Python\\Python314\\python.exe" run_tests.py TestOne'
+                    }
+                }
+
+                stage('Test Suite Two') {
+                    steps {
+                        echo "Running Suite 2..."
+                        // Rulam doar al doilea set de teste
+                        bat '"C:\\Users\\sofro\\AppData\\Local\\Programs\\Python\\Python314\\python.exe" run_tests.py TestTwo'
+                    }
                 }
             }
         }
@@ -31,13 +34,14 @@ pipeline {
 
     post {
         always {
+            // Colectam rapoartele de la ambele teste
             junit 'test-reports/*.xml'
         }
         success {
-            echo 'SUCCESS: Tests passed.'
+            echo 'GREAT SUCCESS: Toate testele au trecut!'
         }
         failure {
-            echo 'FAILURE: Tests failed.'
+            echo 'FAIL: Unul dintre teste a picat.'
         }
     }
 }
