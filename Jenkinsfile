@@ -14,7 +14,7 @@ pipeline {
             steps {
                 echo "Installing Python dependencies..."
                 // Use 'pip install' to get the reporting library
-                bat 'C:\Users\sofro\AppData\Local\Microsoft\WindowsApps\python.exe pip install -r requirements.txt'
+                bat 'pip install -r requirements.txt'
             }
         }
 
